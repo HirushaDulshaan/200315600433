@@ -1,0 +1,109 @@
+/* Card Container */
+.custom-nomination-card,
+.custom-empty-state {
+  border-radius: 1.25rem;
+  background: #ffffff;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05),
+              0 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.custom-empty-state {
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.empty-icon {
+  font-size: 2.5rem;
+  background: #f3f4f6;
+  width: 70px;
+  height: 70px;
+  line-height: 70px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+/* Header Icon Badge */
+.header-icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+  color: #0284c7;
+  flex-shrink: 0;
+}
+
+/* Labels */
+.form-label-custom {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #4b5563;
+  margin-bottom: 0.45rem;
+}
+
+/* Modern Selects & Inputs */
+.custom-input {
+  border-radius: 0.75rem !important;
+  border: 1.5px solid #e5e7eb !important;
+  background-color: #f9fafb !important;
+  font-size: 0.925rem !important;
+  padding: 0.7rem 0.9rem !important;
+  color: #1f2937 !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.custom-input:focus {
+  background-color: #ffffff !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* Primary Submit Button */
+.custom-submit-btn {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transition: all 0.2s ease-in-out;
+}
+
+.custom-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+}
+
+.custom-submit-btn:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Alerts */
+.custom-alert {
+  border-radius: 0.75rem;
+  padding: 0.85rem 1rem;
+  font-size: 0.875rem;
+}
+
+.custom-alert.alert-success {
+  background-color: #ecfdf5;
+  color: #065f46;
+}
+
+.custom-alert.alert-danger {
+  background-color: #fef2f2;
+  color: #991b1b;
+}

@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import axios from 'axios';
+import './ProgrammeForm.css';
 
 interface Props {
   onProgrammeAdded: () => void;
@@ -65,16 +66,32 @@ function ProgrammeForm({ onProgrammeAdded }: Props) {
   };
 
   return (
-    <div className="card shadow mb-4">
-      <div className="card-body p-4">
-        <h4 className="mb-3">Add Training Programme</h4>
+    <div className="card custom-programme-card border-0 mb-4">
+      {/* Header */}
+      <div className="card-header bg-transparent border-0 pt-4 pb-0 px-4 px-md-5">
+        <div className="d-flex align-items-center gap-3">
+          <div className="programme-icon-badge">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+              <path d="M6 6h10" />
+              <path d="M6 10h10" />
+            </svg>
+          </div>
+          <div>
+            <h4 className="card-title fw-bold mb-1 text-dark">Add Programme</h4>
+            <p className="text-muted small mb-0">Create and schedule a new training session</p>
+          </div>
+        </div>
+      </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label">Title</label>
+      {/* Body */}
+      <div className="card-body p-4 p-md-5">
+        <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
+          <div>
+            <label className="form-label-custom">Programme Title</label>
             <input
               type="text"
-              className="form-control"
+              className="form-control form-control-lg custom-input"
               placeholder="e.g. Leadership Development Workshop"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -82,61 +99,86 @@ function ProgrammeForm({ onProgrammeAdded }: Props) {
             />
           </div>
 
-          <div className="mb-3">
-            <label className="form-label">Training Date</label>
-            <input
-              type="date"
-              className="form-control"
-              value={trainingDate}
-              min={todayString}
-              onChange={(e) => setTrainingDate(e.target.value)}
-              required
-            />
+          <div className="row g-3">
+            <div className="col-md-6">
+              <label className="form-label-custom">Training Date</label>
+              <input
+                type="date"
+                className="form-control form-control-lg custom-input"
+                value={trainingDate}
+                min={todayString}
+                onChange={(e) => setTrainingDate(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="col-md-6">
+              <label className="form-label-custom">Max Participants</label>
+              <input
+                type="number"
+                className="form-control form-control-lg custom-input"
+                min="1"
+                placeholder="e.g. 30"
+                value={maxParticipants}
+                onChange={(e) => setMaxParticipants(e.target.value)}
+                required
+              />
+            </div>
           </div>
 
-          <div className="mb-3">
-            <label className="form-label">Venue</label>
+          <div>
+            <label className="form-label-custom">Venue</label>
             <input
               type="text"
-              className="form-control"
-              placeholder="e.g. Main Auditorium"
+              className="form-control form-control-lg custom-input"
+              placeholder="e.g. Main Auditorium or Virtual Meeting"
               value={venue}
               onChange={(e) => setVenue(e.target.value)}
               required
             />
           </div>
 
-          <div className="mb-3">
-            <label className="form-label">Trainer</label>
+          <div>
+            <div className="d-flex justify-content-between align-items-center mb-1">
+              <label className="form-label-custom mb-0">Trainer</label>
+              <span className="badge bg-light text-secondary border font-normal">Optional</span>
+            </div>
             <input
               type="text"
-              className="form-control"
+              className="form-control form-control-lg custom-input"
               placeholder="e.g. Dr. S. Fernando"
               value={trainer}
               onChange={(e) => setTrainer(e.target.value)}
             />
           </div>
 
-          <div className="mb-3">
-            <label className="form-label">Max Participants</label>
-            <input
-              type="number"
-              className="form-control"
-              min="1"
-              value={maxParticipants}
-              onChange={(e) => setMaxParticipants(e.target.value)}
-              required
-            />
+          <div className="pt-2">
+            <button
+              type="submit"
+              className="btn custom-programme-btn w-100 py-3"
+              disabled={loading}
+            >
+              {loading ? (
+                <div className="d-flex align-items-center justify-content-center gap-2">
+                  <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span>Scheduling Programme...</span>
+                </div>
+              ) : (
+                'Add Programme'
+              )}
+            </button>
           </div>
-
-          <button type="submit" className="btn btn-success w-100" disabled={loading}>
-            {loading ? 'Adding...' : 'Add Programme'}
-          </button>
         </form>
 
         {message && (
-          <div className={`alert mt-3 ${isError ? 'alert-danger' : 'alert-success'}`} role="alert">
-            {message}
+          <div
+            className={`alert custom-alert d-flex align-items-center mt-4 mb-0 ${
+              isError ? 'alert-danger border-0' : 'alert-success border-0'
+            }`}
+            role="alert"
+          >
+            <span className="me-2">{isError ? '⚠️' : '✅'}</span>
+            <div>{message}</div>
           </div>
         )}
       </div>

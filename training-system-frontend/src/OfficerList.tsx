@@ -6,6 +6,8 @@ interface Officer {
   name: string;
   nic: string;
   department: string;
+  grade: string;
+  dateJoined: string;
 }
 
 interface Props {
@@ -52,6 +54,8 @@ function OfficerList({ refreshKey }: Props) {
                   <th>Name</th>
                   <th>NIC</th>
                   <th>Department</th>
+                  <th>Grade</th>
+                  <th>Date Joined</th>
                 </tr>
               </thead>
               <tbody>
@@ -61,6 +65,8 @@ function OfficerList({ refreshKey }: Props) {
                     <td>{officer.name}</td>
                     <td>{officer.nic}</td>
                     <td>{officer.department}</td>
+                    <td>{officer.grade || <span className="text-muted">—</span>}</td>
+                    <td>{officer.dateJoined || <span className="text-muted">—</span>}</td>
                   </tr>
                 ))}
               </tbody>

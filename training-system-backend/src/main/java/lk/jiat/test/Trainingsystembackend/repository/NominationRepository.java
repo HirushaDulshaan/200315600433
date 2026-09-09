@@ -22,4 +22,9 @@ public interface NominationRepository extends JpaRepository<Nomination, Long> {
 
     List<Nomination> findByProgramme_ProgrammeIdAndStatusOrderByNominatedDateAsc(
             Long programmeId, NominationStatus status);
+
+    // existing file එකට මේ method එක add කරන්න
+    List<Nomination> findByOfficer_OfficerIdAndStatusAndProgramme_Title(
+            Long officerId, NominationStatus status, String title);
+
 }

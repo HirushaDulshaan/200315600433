@@ -6,6 +6,8 @@ const departments = [
   'Legal', 'Planning', 'Audit', 'Engineering', 'Health Services'
 ];
 
+const grades = ['Junior', 'Senior', 'Assistant Director', 'Director'];
+
 interface Props {
   onOfficerAdded: () => void;
 }
@@ -14,6 +16,8 @@ function OfficerForm({ onOfficerAdded }: Props) {
   const [name, setName] = useState('');
   const [nic, setNic] = useState('');
   const [department, setDepartment] = useState('');
+  const [grade, setGrade] = useState('');
+  const [dateJoined, setDateJoined] = useState('');
 
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
@@ -26,14 +30,16 @@ function OfficerForm({ onOfficerAdded }: Props) {
 
     try {
       const res = await axios.post('http://localhost:5000/api/officers', {
-        name, nic, department
+        name, nic, department, grade, dateJoined
       });
       setIsError(false);
       setMessage(res.data.message);
       setName('');
       setNic('');
       setDepartment('');
-      onOfficerAdded(); // tell parent to refresh officer list
+      setGrade('');
+      setDateJoined('');
+      onOfficerAdded();
     } catch (err: any) {
       setIsError(true);
       setMessage(err.response ? err.response.data.message : 'Error connecting to server.');
@@ -85,6 +91,32 @@ function OfficerForm({ onOfficerAdded }: Props) {
                 <option key={dept} value={dept}>{dept}</option>
               ))}
             </select>
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Grade</label>
+            <select
+              className="form-select"
+              value={grade}
+              onChange={(e) => setGrade(e.target.value)}
+              required
+            >
+              <option value="">-- Select Grade --</option>
+              {grades.map((g) => (
+                <option key={g} value={g}>{g}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Date Joined</label>
+            <input
+              type="date"
+              className="form-control"
+              value={dateJoined}
+              onChange={(e) => setDateJoined(e.target.value)}
+              required
+            />
           </div>
 
           <button type="submit" className="btn btn-success w-100" disabled={loading}>

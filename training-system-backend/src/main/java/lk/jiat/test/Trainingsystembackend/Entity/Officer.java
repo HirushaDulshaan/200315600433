@@ -2,6 +2,7 @@ package lk.jiat.test.Trainingsystembackend.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -13,5 +14,6 @@ public class Officer {
     private String name;
     private String nic;
     private String department;
-    // getters and setters
+    private String grade;          // e.g. "Junior", "Senior", "Assistant Director"
+    private LocalDate dateJoined;  // used to calculate years of service
 }
