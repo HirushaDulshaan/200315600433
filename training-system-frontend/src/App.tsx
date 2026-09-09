@@ -35,9 +35,7 @@ function App() {
         {/* Main Content */}
         <div className="flex-grow-1 bg-light">
           <Routes>
-            <Route path="/" element={<NominationForm programmeId={0} refreshKey={0} onCancelled={function (): void {
-              throw new Error('Function not implemented.');
-            } } />} />
+            <Route path="/" element={<NominationForm />} />
             <Route path="/add-officer" element={<OfficerPage />} />
             <Route path="/add-programme" element={<ProgrammePage />} />
           </Routes>

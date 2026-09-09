@@ -46,6 +46,9 @@ function NominationForm() {
       .catch(err => console.error('Failed to load programmes', err));
   }, []);
 
+  // Find the full programme object for the currently selected programme
+  const selectedProgramme = programmes.find(p => p.programmeId === Number(selectedProgrammeId));
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage('');
@@ -157,7 +160,12 @@ function NominationForm() {
           </div>
 
           {selectedProgrammeId && (
-            <NominationsList programmeId={Number(selectedProgrammeId)} refreshKey={refreshKey} onCancelled={() => setRefreshKey(prev => prev + 1)} />
+            <NominationsList
+              programmeId={Number(selectedProgrammeId)}
+              programmeTitle={selectedProgramme?.title ?? ''}
+              refreshKey={refreshKey}
+              onCancelled={() => setRefreshKey(prev => prev + 1)}
+            />
           )}
         </div>
       </div>

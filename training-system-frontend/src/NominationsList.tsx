@@ -11,11 +11,12 @@ interface Nomination {
 
 interface Props {
   programmeId: number;
+  programmeTitle: string;
   refreshKey: number;
   onCancelled: () => void;
 }
 
-function NominationsList({ programmeId, refreshKey, onCancelled }: Props) {
+function NominationsList({ programmeId, programmeTitle, refreshKey, onCancelled }: Props) {
   const [nominations, setNominations] = useState<Nomination[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [cancellingId, setCancellingId] = useState<number | null>(null);
@@ -33,12 +34,17 @@ function NominationsList({ programmeId, refreshKey, onCancelled }: Props) {
     fetchNominations();
   }, [programmeId, refreshKey]);
 
-  const handleCancel = async (nominationId: number) => {
+  const handleCancel = async (nominationId: number, officerName: string) => {
+    const confirmCancel = window.confirm(
+      `Cancel ${officerName}'s nomination for "${programmeTitle}"?`
+    );
+    if (!confirmCancel) return;
+
     setCancellingId(nominationId);
     setNotice('');
     try {
       const res = await axios.delete(`http://localhost:5000/api/nominations/${nominationId}`);
-      setNotice(res.data.message);
+      setNotice(`${officerName}'s nomination for "${programmeTitle}" was cancelled. ${res.data.message}`);
       onCancelled();
     } catch (err: any) {
       setNotice(err.response ? err.response.data.message : 'Error cancelling nomination.');
@@ -64,72 +70,76 @@ function NominationsList({ programmeId, refreshKey, onCancelled }: Props) {
         ) : (
           <>
             <h6 className="text-success">Confirmed ({confirmed.length})</h6>
-            <table className="table table-sm table-bordered">
-              <thead>
-                <tr>
-                  <th>Officer</th>
-                  <th>Department</th>
-                  <th>Nominated By</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {confirmed.map(n => (
-                  <tr key={n.nominationId}>
-                    <td>{n.officer.name}</td>
-                    <td>{n.officer.department}</td>
-                    <td>{n.nominatingDepartment}</td>
-                    <td>
-                      <button
-                        className="btn btn-sm btn-outline-danger"
-                        onClick={() => handleCancel(n.nominationId)}
-                        disabled={cancellingId === n.nominationId}
-                      >
-                        {cancellingId === n.nominationId ? 'Cancelling...' : 'Cancel'}
-                      </button>
-                    </td>
+            <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+              <table className="table table-sm table-bordered mb-0" style={{ width: '100%', tableLayout: 'fixed' }}>
+                <thead style={{ position: 'sticky', top: 0, background: '#fff', zIndex: 1 }}>
+                  <tr>
+                    <th style={{ width: '30%' }}>Officer</th>
+                    <th style={{ width: '25%' }}>Department</th>
+                    <th style={{ width: '25%' }}>Nominated By</th>
+                    <th style={{ width: '20%' }}></th>
                   </tr>
-                ))}
-                {confirmed.length === 0 && (
-                  <tr><td colSpan={4} className="text-muted">No confirmed nominations.</td></tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {confirmed.map(n => (
+                    <tr key={n.nominationId}>
+                      <td>{n.officer.name}</td>
+                      <td>{n.officer.department}</td>
+                      <td>{n.nominatingDepartment}</td>
+                      <td>
+                        <button
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={() => handleCancel(n.nominationId, n.officer.name)}
+                          disabled={cancellingId === n.nominationId}
+                        >
+                          {cancellingId === n.nominationId ? 'Cancelling...' : 'Cancel'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  {confirmed.length === 0 && (
+                    <tr><td colSpan={4} className="text-muted">No confirmed nominations.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
 
             <h6 className="text-warning mt-4">Waiting List ({waiting.length})</h6>
-            <table className="table table-sm table-bordered">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Officer</th>
-                  <th>Department</th>
-                  <th>Nominated By</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {waiting.map((n, index) => (
-                  <tr key={n.nominationId}>
-                    <td>{index + 1}</td>
-                    <td>{n.officer.name}</td>
-                    <td>{n.officer.department}</td>
-                    <td>{n.nominatingDepartment}</td>
-                    <td>
-                      <button
-                        className="btn btn-sm btn-outline-secondary"
-                        onClick={() => handleCancel(n.nominationId)}
-                        disabled={cancellingId === n.nominationId}
-                      >
-                        {cancellingId === n.nominationId ? 'Cancelling...' : 'Remove'}
-                      </button>
-                    </td>
+            <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+              <table className="table table-sm table-bordered mb-0" style={{ width: '100%', tableLayout: 'fixed' }}>
+                <thead style={{ position: 'sticky', top: 0, background: '#fff', zIndex: 1 }}>
+                  <tr>
+                    <th style={{ width: '10%' }}>#</th>
+                    <th style={{ width: '25%' }}>Officer</th>
+                    <th style={{ width: '20%' }}>Department</th>
+                    <th style={{ width: '25%' }}>Nominated By</th>
+                    <th style={{ width: '20%' }}></th>
                   </tr>
-                ))}
-                {waiting.length === 0 && (
-                  <tr><td colSpan={5} className="text-muted">No one on the waiting list.</td></tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {waiting.map((n, index) => (
+                    <tr key={n.nominationId}>
+                      <td>{index + 1}</td>
+                      <td>{n.officer.name}</td>
+                      <td>{n.officer.department}</td>
+                      <td>{n.nominatingDepartment}</td>
+                      <td>
+                        <button
+                          className="btn btn-sm btn-outline-secondary"
+                          onClick={() => handleCancel(n.nominationId, n.officer.name)}
+                          disabled={cancellingId === n.nominationId}
+                        >
+                          {cancellingId === n.nominationId ? 'Cancelling...' : 'Remove'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  {waiting.length === 0 && (
+                    <tr><td colSpan={5} className="text-muted">No one on the waiting list.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </>
         )}
       </div>
