@@ -1,17 +1,10 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import axios from 'axios';
+import NominationsList from './NominationsList';
 
 const departments = [
-  'Finance',
-  'Administration',
-  'Human Resources',
-  'IT',
-  'Procurement',
-  'Legal',
-  'Planning',
-  'Audit',
-  'Engineering',
-  'Health Services'
+  'Finance', 'Administration', 'Human Resources', 'IT', 'Procurement',
+  'Legal', 'Planning', 'Audit', 'Engineering', 'Health Services'
 ];
 
 interface Officer {
@@ -26,6 +19,7 @@ interface TrainingProgramme {
   title: string;
   trainingDate: string;
   venue: string;
+  maxParticipants: number;
 }
 
 function NominationForm() {
@@ -38,7 +32,9 @@ function NominationForm() {
 
   const [message, setMessage] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
+  const [status, setStatus] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [refreshKey, setRefreshKey] = useState<number>(0);
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/officers')
@@ -53,6 +49,7 @@ function NominationForm() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage('');
+    setStatus('');
     setLoading(true);
 
     try {
@@ -63,11 +60,13 @@ function NominationForm() {
       });
       setIsError(false);
       setMessage(res.data.message);
+      setStatus(res.data.status);
       setSelectedOfficerId('');
-      setSelectedProgrammeId('');
       setNominatingDepartment('');
+      setRefreshKey(prev => prev + 1);
     } catch (err: any) {
       setIsError(true);
+      setStatus('');
       setMessage(err.response ? err.response.data.message : 'Error connecting to server.');
     } finally {
       setLoading(false);
@@ -75,15 +74,14 @@ function NominationForm() {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 mb-5">
       <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card shadow">
+        <div className="col-md-7">
+          <div className="card shadow mb-4">
             <div className="card-body p-4">
               <h2 className="card-title text-center mb-4">Nominate Officer for Training</h2>
 
               <form onSubmit={handleSubmit}>
-
                 <div className="mb-3">
                   <label className="form-label">Training Programme</label>
                   <select
@@ -95,7 +93,7 @@ function NominationForm() {
                     <option value="">-- Select Programme --</option>
                     {programmes.map(p => (
                       <option key={p.programmeId} value={p.programmeId}>
-                        {p.title} ({p.trainingDate})
+                        {p.title} ({p.trainingDate}) — Max {p.maxParticipants}
                       </option>
                     ))}
                   </select>
@@ -147,11 +145,20 @@ function NominationForm() {
 
               {message && (
                 <div className={`alert mt-3 ${isError ? 'alert-danger' : 'alert-success'}`} role="alert">
+                  {status && (
+                    <span className={`badge me-2 ${status === 'CONFIRMED' ? 'bg-success' : 'bg-warning text-dark'}`}>
+                      {status}
+                    </span>
+                  )}
                   {message}
                 </div>
               )}
             </div>
           </div>
+
+          {selectedProgrammeId && (
+            <NominationsList programmeId={Number(selectedProgrammeId)} refreshKey={refreshKey} onCancelled={() => setRefreshKey(prev => prev + 1)} />
+          )}
         </div>
       </div>
     </div>
